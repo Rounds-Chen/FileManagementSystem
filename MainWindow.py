@@ -165,6 +165,7 @@ class Ui_MainWindow(object):
             self.emptyLabel.setVisible(True)
             return
 
+        self.emptyLabel.setVisible(False)
         self.tableWidget.setRowCount(len(self._fcbs))
         for index, f in enumerate(self._fcbs):
             item1 = QTableWidgetItem(f._filename+('.txt' if f._type==TXTFILE else ''))
@@ -260,6 +261,7 @@ class Ui_MainWindow(object):
     def delFile(self):
         print('删除文件（夹）！')
         index=self.tableWidget.selectedItems()[0].row()
+        self.tableWidget.removeRow(index)
         fcb=self._fcbs[index]
         minus,i=0,0
         while i<index:
@@ -272,7 +274,8 @@ class Ui_MainWindow(object):
             self._treeItem.removeChild(self._treeItem.child(index))
         self._ctrl.delFile(fcb)
         self._fcbs.pop(index)
-        self.tableWidget.removeRow(index)
+        if len(self._fcbs)==0:
+            self.emptyLabel.setVisible(True)
 
     def rename(self):
         print('重命名文件（夹）')
@@ -362,7 +365,6 @@ class Ui_MainWindow(object):
             s['bitmap']=self._ctrl._disk._bitmap
             s['memory']=self._ctrl._disk._memory
             s['fcb']=self._ctrl._disk._root
-
         finally:
             s.close()
 

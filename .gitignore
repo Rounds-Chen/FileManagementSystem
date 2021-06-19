@@ -1,5 +1,7 @@
 .idea/
 
+*.pdf
+report.md
 _pycache_/
 build/
 *.qrc

@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from FCB import DIR, TXTFILE
 from VirtualDisk import Disk
-import shelve,os
+import shelve,os,re
 from icos import *
 
 class Ctrl(object):
@@ -20,7 +20,6 @@ class Ctrl(object):
     def initDisk(self):
         if not os.path.exists('test_shelf.db.dir'):
             return
-
         s=shelve.open('test_shelf.db')
         self._disk._fcbNums=s['fcbNums']
         self._disk._remainer=s['remainer']
@@ -28,15 +27,21 @@ class Ctrl(object):
         self._disk._memory=s['memory']
         self._disk._root=s['fcb']
 
+
     # 检查当前目录下是否有重名文件
     def validateFileName(self,fileName,type,id):
-        dupNums=0
+        dupNum=0
+        nameList=[]
         for f in self._ui._fcbs:
-            if f._filename.startswith(fileName) and f._type==type and f._id!=id:
-                dupNums+=1
-        if dupNums!=0:
-            fileName=fileName+'('+str(dupNums)+')'
-            return fileName
+            if f._id!=id and f._type==type:
+                nameList.append(f._filename)
+        for name in nameList:
+            if name.startswith(fileName):
+                dupNum+=1
+        if dupNum!=0:
+            while fileName+'('+str(dupNum)+')' in nameList:
+                dupNum+=1
+            return fileName+'('+str(dupNum)+')'
         return fileName
 
     # 创建新文件夹
@@ -92,7 +97,7 @@ class Ctrl(object):
     def modify(self,fileFcb,content):
         self._disk.modify(fileFcb,content)
 
-    # 读取问价
+    # 读取文件
     def readFile(self,fileFcb):
         return self._disk.readFile(fileFcb)
 
