@@ -1,0 +1,7 @@
+.idea/
+
+_pycache_/
+build/
+*.qrc
+*.spec
+*.ui
