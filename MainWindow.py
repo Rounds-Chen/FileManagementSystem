@@ -263,6 +263,7 @@ class Ui_MainWindow(object):
         index=self.tableWidget.selectedItems()[0].row()
         self.tableWidget.removeRow(index)
         fcb=self._fcbs[index]
+        self._fcbs.pop(index)
         minus,i=0,0
         while i<index:
             if self._fcbs[i]._type==TXTFILE:
@@ -272,8 +273,8 @@ class Ui_MainWindow(object):
         print('树形结构中的文件夹index：',index)
         if fcb._type==DIR:
             self._treeItem.removeChild(self._treeItem.child(index))
+            print('删除文件后的treeItem：',self._treeItem)
         self._ctrl.delFile(fcb)
-        self._fcbs.pop(index)
         if len(self._fcbs)==0:
             self.emptyLabel.setVisible(True)
 
@@ -312,6 +313,7 @@ class Ui_MainWindow(object):
         newPath='>'.join(newPath[:-2])+'>'
         self.pathText.setText(newPath)
         self._treeItem=self._treeItem.parent()
+        print('回退一级后的_treeItem:',self._treeItem)
 
     def clickFile(self):
         print('双击文件（夹）！')
